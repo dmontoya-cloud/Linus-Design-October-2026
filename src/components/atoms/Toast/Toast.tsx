@@ -65,18 +65,22 @@ const VARIANT_ICONS: Partial<Record<ToastVariant, () => ReactNode>> = {
 }
 
 /**
- * Atom/Toast — five variants (success/warning/info/danger/neutral), a solid left accent bar
- * plus a soft-tinted background, both driven entirely by this system's existing semantic
- * color tokens (never a raw hex or primitive): success uses `border-success`/`success-soft`,
- * warning uses `content-warning`/`warning-soft` (no dedicated `border-warning` token exists
- * yet), info uses `border-info`/`info-soft`, danger uses `border-danger`/`danger-soft` —
- * named `danger` (not `error`) to match this system's own semantic-token and `Button`-variant
- * naming everywhere else. Neutral has no matching pair in the token set either (no
- * "neutral-soft" background token exists), so it composes two already-established tokens
- * instead: `border-subtle` for the background and `text-secondary` for the bar — and it's
- * also the one variant with no icon, matching the reference. Title and message always use the
- * plain `text-primary`/`text-secondary` tokens regardless of variant — only the icon, bar, and
- * close button pick up the accent color, so the tint never bleeds into the copy itself.
+ * Atom/Toast — five variants (success/warning/info/danger/neutral). Flat `surface` background,
+ * a uniform 1px border, on request (replacing an earlier 4px left accent bar + soft-tinted
+ * fill) — driven entirely by this system's existing semantic color tokens (never a raw hex or
+ * primitive): the border takes each variant's own `*-soft` tint (already named for exactly
+ * this — subtle, legible as an outline without reading as a filled color block), while the
+ * icon and close button keep the stronger, fully-saturated accent color so the variant still
+ * reads unambiguously at a glance: success uses `border-success`/`success-soft`, warning uses
+ * `content-warning`/`warning-soft` (no dedicated `border-warning` token exists yet), info uses
+ * `border-info`/`info-soft`, danger uses `border-danger`/`danger-soft` — named `danger` (not
+ * `error`) to match this system's own semantic-token and `Button`-variant naming everywhere
+ * else. Neutral has no matching `*-soft` tint, so its border falls back to this component's own
+ * default (`border-subtle`, already the subtle neutral tone) and its accent is `text-secondary`
+ * — it's also the one variant with no icon, matching the reference. Title and message always
+ * use the plain `text-primary`/`text-secondary` tokens regardless of variant — only the icon,
+ * border, and close button pick up the accent/tint color, so it never bleeds into the copy
+ * itself.
  * `danger` renders with `role="alert"` (assertive) since it's the one variant representing
  * something going wrong; every other variant is `role="status"` (polite). The close (×)
  * button always renders — `onClose` is optional so Toast still renders standalone (e.g. a

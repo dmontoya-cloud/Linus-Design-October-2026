@@ -1,11 +1,16 @@
+/* Flat `surface` background plus a uniform 1px border, on request — replaces the earlier
+   4px left accent bar + soft-tinted fill. The border now carries each variant's own `*-soft`
+   token (already named for exactly this — a subtle, low-saturation tint, legible as a 1px
+   outline without reading as a filled color block); the icon and close button keep the
+   stronger, fully-saturated accent color so the variant is still unambiguous at a glance. */
 .toast {
   display: flex;
   align-items: flex-start;
   gap: var(--space-md, 16px);
   padding: var(--space-md, 16px) var(--space-lg, 24px);
   border-radius: var(--radius-lg, 16px);
-  border-left: 4px solid var(--toast-accent, var(--color-border-strong, #a5aeb5));
-  background: var(--toast-bg, var(--color-surface, #fff));
+  border: 1px solid var(--toast-border, var(--color-border-subtle, #eff0f2));
+  background: var(--color-surface, #fff);
   box-shadow: var(
     --shadow-card,
     0 2px 8px rgba(32, 37, 42, 0.06),
@@ -16,32 +21,31 @@
 
 .success {
   --toast-accent: var(--color-border-success, #15803d);
-  --toast-bg: var(--color-success-soft, #e8f2ec);
+  --toast-border: var(--color-success-soft, #e8f2ec);
 }
 
 .warning {
   /* No dedicated `border-warning` token exists yet — `content-warning` is the same hue
      (orange-700) and is already meant for icon/text-weight accents like this one. */
   --toast-accent: var(--color-content-warning, #bc4126);
-  --toast-bg: var(--color-warning-soft, #ffeeeb);
+  --toast-border: var(--color-warning-soft, #ffeeeb);
 }
 
 .info {
   --toast-accent: var(--color-border-info, #2563eb);
-  --toast-bg: var(--color-info-soft, #e9effd);
+  --toast-border: var(--color-info-soft, #e9effd);
 }
 
 .danger {
   --toast-accent: var(--color-border-danger, #dc2626);
-  --toast-bg: var(--color-danger-soft, #fce9e9);
+  --toast-border: var(--color-danger-soft, #fce9e9);
 }
 
 .neutral {
-  /* No "neutral-soft" background token exists either — composed from two already-
-     established tokens instead: a subtle border tint reused as a background, and the
-     secondary text color reused as the accent (see the component docstring). */
+  /* No "neutral-soft" tint token exists either — `border-subtle` (this component's own
+     default) already is that subtle neutral tone, so neutral needs no override here beyond
+     its accent. */
   --toast-accent: var(--color-text-secondary, #505e6a);
-  --toast-bg: var(--color-border-subtle, #eff0f2);
 }
 
 .icon {
@@ -114,7 +118,7 @@
 .closeButton:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 2px var(--toast-bg, var(--color-surface, #fff)),
+    0 0 0 2px var(--color-surface, #fff),
     0 0 0 4px var(--color-primary, #087dae);
   border-radius: var(--radius-sm, 8px);
 }

@@ -1815,17 +1815,18 @@
         flex-wrap: wrap;
       }
 
-      /* Toast — five variants, a solid left accent bar plus a soft-tinted background, both
-         composed from existing semantic tokens (see the Components section prose below for the
-         per-variant token pairing). Mirrors src/components/atoms/Toast exactly. */
+      /* Toast — five variants. Flat surface background, a uniform 1px border (on request,
+         replacing an earlier 4px left accent bar + soft-tinted fill); the border takes each
+         variant's own *-soft tint, the icon/close button keep the stronger accent color.
+         Mirrors src/components/atoms/Toast exactly. */
       .toast2 {
         display: flex;
         align-items: flex-start;
         gap: var(--space-md);
         padding: var(--space-md) var(--space-lg);
         border-radius: var(--radius-lg);
-        border-left: 4px solid var(--toast-accent, var(--color-text-secondary));
-        background: var(--toast-bg, var(--color-surface));
+        border: 1px solid var(--toast-border, var(--color-border-subtle));
+        background: var(--color-surface);
         box-shadow: var(--shadow-card);
         box-sizing: border-box;
         max-width: 480px;
@@ -1833,23 +1834,22 @@
       }
       .toast2.success {
         --toast-accent: var(--color-border-success);
-        --toast-bg: var(--color-success-soft);
+        --toast-border: var(--color-success-soft);
       }
       .toast2.warning {
         --toast-accent: var(--color-content-warning);
-        --toast-bg: var(--color-warning-soft);
+        --toast-border: var(--color-warning-soft);
       }
       .toast2.info {
         --toast-accent: var(--color-border-info);
-        --toast-bg: var(--color-info-soft);
+        --toast-border: var(--color-info-soft);
       }
       .toast2.danger {
         --toast-accent: var(--color-border-danger);
-        --toast-bg: var(--color-danger-soft);
+        --toast-border: var(--color-danger-soft);
       }
       .toast2.neutral {
         --toast-accent: var(--color-text-secondary);
-        --toast-bg: var(--color-border-subtle);
       }
       .toast2 .toast2-icon {
         flex-shrink: 0;

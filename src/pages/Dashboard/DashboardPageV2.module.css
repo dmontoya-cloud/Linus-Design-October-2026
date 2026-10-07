@@ -127,3 +127,29 @@
     display: none;
   }
 }
+
+/* Top-right, on request — fixed regardless of scroll position, matching how this kind of
+   transient notification is conventionally placed. 1400 is docs/design.md's own `z-index.toast`
+   token value; no CSS variable exists for it yet (the whole z-index scale is documented but not
+   wired into theme.ts — see Tooltip.module.css's own `.bubble` for the same situation), so it's
+   a literal here rather than an invented one. Width caps at the viewport on Phone, where a fixed
+   360px would run off the right edge. */
+.toastWrapper {
+  position: fixed;
+  top: var(--space-lg, 24px);
+  right: var(--space-lg, 24px);
+  z-index: 1400;
+  width: min(360px, calc(100vw - 48px));
+  animation: toast-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

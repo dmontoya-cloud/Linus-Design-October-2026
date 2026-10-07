@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '@/auth'
+import { Toast } from '@/components/atoms/Toast'
 import { DashboardNavBar } from '../DashboardNavBar'
 import { FullCheckInCardV2 } from './FullCheckInCardV2'
 import { PostReportSurvey } from './PostReportSurvey'
@@ -9,6 +10,10 @@ import { TOTAL_ACTIVITY_COUNT } from './activitiesV2'
 import { ResourcesCard } from './ResourcesCard'
 import { cascadeDelay } from '../cascade'
 import styles from './DashboardPageV2.module.css'
+
+/** How long the "Activity completed" toast stays up before auto-dismissing, on top of its own
+ * always-available manual close (×) button. */
+const ACTIVITY_TOAST_AUTO_DISMISS_MS = 5000
 
 /**
  * DashboardPageV2 — second, independently-editable version of the Dashboard screen, rebuilt per
@@ -29,6 +34,23 @@ export function DashboardPageV2() {
   const [showSurvey, setShowSurvey] = useState(
     () => (location.state as { showSurvey?: boolean } | null)?.showSurvey === true,
   )
+  // Set by ReportReadyPage's "Go to Dashboard" button (see its own `handleGoToDashboard`) —
+  // the one real place in the app an activity actually finishes. Same `location.state`
+  // hand-off pattern as `showSurvey` above.
+  const [showActivityToast, setShowActivityToast] = useState(
+    () =>
+      (location.state as { activityJustCompleted?: boolean } | null)?.activityJustCompleted ===
+      true,
+  )
+
+  useEffect(() => {
+    if (!showActivityToast) return
+    const timer = window.setTimeout(
+      () => setShowActivityToast(false),
+      ACTIVITY_TOAST_AUTO_DISMISS_MS,
+    )
+    return () => window.clearTimeout(timer)
+  }, [showActivityToast])
 
   return (
     <div className={styles.page}>
@@ -60,6 +82,16 @@ export function DashboardPageV2() {
         </div>
       </main>
       {showSurvey ? <PostReportSurvey onClose={() => setShowSurvey(false)} /> : null}
+      {showActivityToast ? (
+        <div className={styles.toastWrapper}>
+          <Toast
+            variant="success"
+            title="Activity completed"
+            message="Your progress is saved"
+            onClose={() => setShowActivityToast(false)}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

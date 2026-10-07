@@ -182,7 +182,11 @@ export function ReportReadyPage() {
 
   function handleGoToDashboard() {
     completeActivity(completedActivityId)
-    navigate('/dashboard')
+    // Tells Dashboard to show its "Activity completed" toast — the same `location.state`
+    // hand-off pattern `showSurvey` already uses (see DashboardPageV2's own doc comment).
+    // Only this button sets it: `handleBuildReport` below heads to /report/building instead,
+    // so there's no Dashboard landing to show a toast on in that case.
+    navigate('/dashboard', { state: { activityJustCompleted: true } })
   }
 
   function handleBuildReport() {
