@@ -1,0 +1,129 @@
+/* 19px is an exact pixel match to Figma's own itemSpacing — not one of the 4/8/16/24/32/48
+   scale tokens, but consistent across every gap in this card (status→title→duration→
+   description→requirement→buttons), so it's a real deliberate value, not noise. Three gaps
+   are pulled in by 8px on request, each via the later element's own negative margin-top
+   rather than changing this shared `gap`: title (tighter under status), duration (tighter
+   under title), and the button row (tighter under description/requirement) — shortening
+   every card by the same amount without touching the description's own `flex: 1`, which is
+   what keeps all three cards in a row the same height regardless of description length. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-xl, 24px);
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  padding: var(--space-lg, 24px);
+  text-align: left;
+}
+
+/* Cascades in on mount, staggered by DashboardPage via the `style` prop — same fade-rise
+   rhythm as Terms of Use / Privacy Policy / Registration — see src/pages/cascade.ts. */
+.reveal {
+  opacity: 0;
+  animation: fade-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.title {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  margin: -8px 0 0;
+}
+
+/* Its own line above the title (not pinned to a corner, not inline beside it) so a long
+   title never has to reserve space for it or risk truncating — on request. Right-aligned on
+   that line, on request. Neutral gray, on request, rather than the primary-blue tint every
+   other badge in this system uses — a "not started" status isn't an accent-worthy highlight
+   the way a time estimate might be. */
+.status {
+  align-self: flex-end;
+  flex-shrink: 0;
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  background: var(--color-border-subtle, #eff0f2);
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-xs, 4px) var(--space-sm, 8px);
+}
+
+/* docs/design.md's documented `badge-success` recipe (success-soft background, success text) —
+   an existing token pair, not a one-off green invented for this badge. */
+.statusCompleted {
+  color: var(--color-success, #15803d);
+  background: var(--color-success-soft, #e8f2ec);
+}
+
+/* Clock icon + a rough duration estimate, on request — this mock-data prototype has no real
+   per-activity timing, so it's just an editorial guess per card, not measured. */
+.duration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs, 4px);
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  margin: -8px 0 0;
+}
+
+.durationIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Only on activities that actually need one (the listening/speaking tasks), on request —
+   same subtle pill treatment as .status, since both are secondary, non-accent-worthy notes.
+   Moved onto its own line below the description (was inline beside .duration), on request. */
+.requirement {
+  align-self: flex-start;
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  background: var(--color-border-subtle, #eff0f2);
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-xs, 4px) var(--space-sm, 8px);
+  margin: 0;
+}
+
+/* flex: 1 so this box absorbs whatever height the card's siblings in the same
+   grid row don't need — the Start button that follows it always sits
+   flush with the card's bottom edge, so every card's button lines up
+   regardless of how long its description text is. */
+.description {
+  flex: 1;
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.buttonRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: -8px;
+}

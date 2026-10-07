@@ -1,0 +1,84 @@
+/* Fixed to the viewport, not the page — first real consumer of the `sticky` z-index token
+   (see docs/design.md's Layering section, reserved since that section was first written).
+   `pointer-events: none` here, lifted by `.visible` below, is what keeps the pill from
+   intercepting clicks while hidden — deliberately not the `disabled` attribute (see
+   ScrollDownHint.tsx's own doc comment for why: disabling a button that's still focused
+   right after triggering the smooth-scroll-to-bottom this pill starts would interrupt that
+   very scroll partway through). */
+.wrapper {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-xl, 32px);
+  z-index: 1100;
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--motion-duration-slow, 250ms) var(--motion-easing-standard, ease),
+    transform var(--motion-duration-slow, 250ms) var(--motion-easing-standard, ease);
+}
+
+.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+/* The bounce lives on this inner element, separate from .wrapper's own slide/fade transform,
+   so the two don't fight over the same CSS property. Three short hops (`iteration-count: 3`),
+   on request, each rising 10px before settling back to rest — not an infinite idle animation,
+   just enough motion to catch the eye once the pill has flown into place. Now a real `<button>`
+   (was a plain `<div>`), on request, so clicking it scrolls to the bottom of the page — the
+   border/font reset and `cursor: pointer` below undo the browser's default button chrome, and
+   a `:hover`/`:focus-visible` treatment gives it the same affordance any other clickable pill
+   in this system has. `tabIndex`/`aria-hidden` (toggled by `visible` in the component, not
+   here) drop it out of the tab order and the accessibility tree while hidden, without
+   touching the native `disabled` state. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm, 8px);
+  padding: var(--space-sm, 8px) var(--space-lg, 24px);
+  border: none;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-primary, #087dae);
+  color: var(--color-text-on-primary, #fff);
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  font-weight: var(--font-paragraph-2-regular-weight, 400);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  transition: background-color var(--motion-duration-fast, 120ms)
+    var(--motion-easing-standard, ease);
+  animation: scrollHintBounce 0.5s ease-in-out 0.4s 3;
+}
+
+.pill:hover {
+  background: var(--color-primary-hover, #065e83);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--color-primary, #087dae);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+@keyframes scrollHintBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

@@ -1,0 +1,75 @@
+.page {
+  min-height: 100svh;
+  background: var(--color-background, #faf9f7);
+}
+
+/* Fixed 64px, matching DashboardNavBar's own `.navBar` height, on request — this header used
+   to just be padding-driven (24px top/bottom around the 36px logo, ~84px total), which put it
+   out of step with every screen reached from Dashboard. Height fixed + `align-items: center`
+   was meant to center the same 36px `Logo` (shared, unchanged) the same way DashboardNavBar
+   does — but never actually did, on its own (see `.logo` below). */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md, 16px);
+  height: 64px;
+  padding: 0 var(--space-lg, 24px);
+  background: var(--color-surface, #fff);
+  border-bottom: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+/* `align-self: center` overrides `Logo`'s own `align-self: flex-start` (a safety default
+   against a stretch-y parent distorting it — irrelevant here, but it also wins over `.header`'s
+   `align-items: center` since that only sets the *default* alignment, on request/bug fix: the
+   logo was sitting flush against the header's top edge instead of centered, because nothing
+   here countermanded that default before now. DashboardNavBar never hits this — its own Logo
+   sits inside an inner flex wrapper already sized to the logo's own height, so there's no
+   leftover vertical space for the misalignment to show. */
+.logo {
+  display: block;
+  align-self: center;
+}
+
+.progressSection {
+  display: block;
+}
+
+.content {
+  max-width: 576px;
+  margin: 0 auto;
+  /* Top padding is a flat --space-xxl (48px) — the same progress-bar-to-title distance as
+     LegalLayout's, so the two chrome styles read as one continuous funnel. */
+  padding: var(--space-xxl, 48px) var(--space-lg, 24px) var(--space-xl, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md, 16px);
+}
+
+.title {
+  font-family: var(--font-headline-3-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-3-semibold-size, 2.0625rem);
+  font-weight: var(--font-headline-3-semibold-weight, 600);
+  line-height: var(--font-headline-3-semibold-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 0 var(--space-xxl, 48px);
+  }
+
+  .content {
+    max-width: 720px;
+    padding: var(--space-xxl, 48px) var(--space-xl, 32px);
+  }
+}

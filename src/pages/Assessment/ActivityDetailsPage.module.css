@@ -1,0 +1,297 @@
+/* Same radial wash as Dashboard's .page — secondary-subtle to light blue at 10% opacity, on
+   request, so the pages between Dashboard and the actual task share one background. */
+.page {
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse at 48% 49%, rgba(188, 224, 164, 0.1), rgba(145, 213, 233, 0.1)),
+    var(--color-background, #faf9f7);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xxl, 48px) var(--space-lg, 24px);
+}
+
+.card {
+  max-width: 900px;
+  width: 100%;
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-xl, 24px);
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  padding: var(--space-xxl, 48px);
+  margin-bottom: var(--space-xl, 32px);
+  text-align: left;
+}
+
+/* The way back once `DashboardNavBar`'s own "Exit" link was dropped from this page (see the
+   component's own doc comment), on request — an outline/sm pill above the title, matching
+   Figma's reference frames exactly, rather than the nav bar's usual top-right placement. */
+.backButton {
+  display: inline-flex;
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+/* `MemoryThinkingDetailsPage` only, on request — the redo-cooldown notice that used to be a
+   "Redo activity on {date}" label on Dashboard's own card, moved here so it's a real message
+   once you're actually looking at this activity again, not just a button suffix. Info-soft/info
+   colors, on request — this is a heads-up, not a warning (nothing here is actually wrong or
+   blocked), so the same blue `Toast`'s own `.info` variant uses reads more accurately than the
+   orange/red `.warning` one this started with. */
+.redoNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm, 8px);
+  background: var(--color-info-soft, #e9effd);
+  color: var(--color-info, #2563eb);
+  border-radius: var(--radius-md, 12px);
+  padding: var(--space-md, 16px);
+  margin: 0 0 var(--space-lg, 24px);
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  line-height: 1.5;
+}
+
+.redoNoticeIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg, 24px);
+  margin: 0 0 var(--space-sm, 8px);
+}
+
+/* Groups the title with its duration line so both sit to the "I'm ready" button's left as one
+   flex item, on request — `.duration` used to be a separate paragraph after `.header` entirely,
+   which read fine at Desktop (where `.header`'s row layout still put it visually under the
+   title) but landed *below* the button once `.header` switches to a column at 900px, since the
+   button came before it in source order. Grouping them here fixes both breakpoints from the
+   same markup, without needing a breakpoint-specific reorder. */
+.titleGroup {
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-headline-3-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-3-semibold-size, 2.0625rem);
+  font-weight: var(--font-headline-3-semibold-weight, 600);
+  line-height: var(--font-headline-3-semibold-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+/* No bottom margin, on request — `.duration` is always the last thing in `.titleGroup` now,
+   so its own margin used to stack with `.header`'s 24px flex `gap` (titleGroup-to-button in
+   the 900px-and-below column layout), doubling the gap above the button to 48px instead of
+   the intended 24px. `.header`'s `gap` is the single source of that spacing now. */
+.duration {
+  font-family: var(--font-label-l-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-l-semibold-size, 0.8125rem);
+  font-weight: var(--font-label-l-semibold-weight, 600);
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0;
+}
+
+/* Centered row of columns, on request. One column holds what was a separate orange warning
+   box, folded into the same icon-title-content pattern as the others. `flex-wrap` (plus
+   `row-gap`, since `gap` alone collapses to a single value once items wrap onto more than one
+   line) lets the row reflow to fewer per line as the card narrows. Five columns now (the
+   microphone rule added on request, matching the Figma reference), on a 140px shrinkable basis
+   rather than the original four columns' fixed 180px — at the card's max content width (900px
+   card minus its 48px×2 padding = 804px), five 140px columns plus four 24px gaps come to 796px,
+   just fitting on one row; a fixed 180px basis (bumped up here from 4 columns' own math) would
+   never fit five in one row even at that widest point (996px needed), always forcing an
+   uneven 4-up-then-1 wrap instead. `flex-shrink` (not fixed `width`) lets the columns keep
+   narrowing gracefully as the viewport shrinks further, same as the original four-column
+   version, down to the 900px breakpoint below where `.instructionItem`'s Tablet/Phone rule
+   takes over with an entirely different icon-beside-text row layout. */
+.instructions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-lg, 24px);
+  row-gap: var(--space-xl, 32px);
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+.instructionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-sm, 8px);
+  flex: 0 1 140px;
+  min-width: 120px;
+}
+
+.instructionIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--color-text-primary, #1f2a37);
+}
+
+/* Stepped back down one size, on request, from paragraph-2-semibold (16px) to label-l-semibold
+   (13px) — the size this was at originally, before that bump (see git history). Plain block
+   text (not a flex row) so the info icon flows inline and wraps onto the last line with the
+   title's own text, on request — right at the end of the sentence rather than pinned beside the
+   whole (possibly multi-line) block. */
+.instructionTitle {
+  font-family: var(--font-label-l-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-l-semibold-size, 0.8125rem);
+  font-weight: var(--font-label-l-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* The paragraph that used to sit below the title now lives in a Tooltip instead, on
+   request — this info icon is the trigger. margin-left (not a flex gap, now that
+   .instructionTitle is plain text) is what separates it from the title's last word. */
+.instructionInfoIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-left: var(--space-xs, 4px);
+}
+
+.divider {
+  width: 100%;
+  height: 0;
+  margin: var(--space-lg, 24px) 0;
+  border: none;
+  border-top: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+.taskIntro {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.5;
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+.taskList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md, 16px);
+  padding: var(--space-md, 16px) 0;
+}
+
+.taskNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-primary-soft, #e6f2f7);
+  color: var(--color-text-primary, #1f2a37);
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+}
+
+.taskName {
+  font-family: var(--font-paragraph-2-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-semibold-size, 1rem);
+  font-weight: var(--font-paragraph-2-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-xs, 4px);
+}
+
+.taskDescription {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Cascades the card in on mount, staggered by cascadeDelay — the same fade-rise rhythm
+   Dashboard's own sections use (see src/pages/cascade.ts) — on request, so arriving here from
+   Dashboard's "Start Activity" feels like a continuation of that same motion instead of a hard
+   cut to a fully-rendered page. */
+.reveal {
+  opacity: 0;
+  animation: fade-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Raised from 640px to 900px (Tablet, not just Phone), on request — the card's own 48px
+   horizontal padding was eating too much of the available width on both, squeezing
+   `.instructions`'s 180px columns and everything else inside. 16px horizontal (down from
+   48px), vertical stays 32px. */
+@media (max-width: 900px) {
+  .card {
+    padding: var(--space-xl, 32px) var(--space-md, 16px);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Icon-beside-text, left-aligned, one per row, on request — Tablet/Phone only; Desktop
+     keeps the icon-on-top/centered grid above (5-up at full width). */
+  .instructions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    row-gap: var(--space-lg, 24px);
+  }
+
+  .instructionItem {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .instructionTitle {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* `MemoryThinkingDetailsPage` only, on request (an extra class that page's own `.header` opts
+   into — Lifestyle/Priorities Details don't add it, so they keep the plain `.header` rule's
+   ≤900px stacking above, unchanged). Row layout, matching Desktop, on Tablet specifically
+   (641–900px) — only true Phone width stacks the title/duration group above the button.
+   Placed after the ≤900px block above so it wins the 641–900px overlap between the two same-
+   specificity single-class rules on this element. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .headerTabletRow {
+    flex-direction: row;
+    align-items: center;
+  }
+}

@@ -1,0 +1,124 @@
+/* Flat `surface` background plus a uniform 1px border, on request — replaces the earlier
+   4px left accent bar + soft-tinted fill. The border now carries each variant's own `*-soft`
+   token (already named for exactly this — a subtle, low-saturation tint, legible as a 1px
+   outline without reading as a filled color block); the icon and close button keep the
+   stronger, fully-saturated accent color so the variant is still unambiguous at a glance. */
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md, 16px);
+  padding: var(--space-md, 16px) var(--space-lg, 24px);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--toast-border, var(--color-border-subtle, #eff0f2));
+  background: var(--color-surface, #fff);
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  box-sizing: border-box;
+}
+
+.success {
+  --toast-accent: var(--color-border-success, #15803d);
+  --toast-border: var(--color-success-soft, #e8f2ec);
+}
+
+.warning {
+  /* No dedicated `border-warning` token exists yet — `content-warning` is the same hue
+     (orange-700) and is already meant for icon/text-weight accents like this one. */
+  --toast-accent: var(--color-content-warning, #bc4126);
+  --toast-border: var(--color-warning-soft, #ffeeeb);
+}
+
+.info {
+  --toast-accent: var(--color-border-info, #2563eb);
+  --toast-border: var(--color-info-soft, #e9effd);
+}
+
+.danger {
+  --toast-accent: var(--color-border-danger, #dc2626);
+  --toast-border: var(--color-danger-soft, #fce9e9);
+}
+
+.neutral {
+  /* No "neutral-soft" tint token exists either — `border-subtle` (this component's own
+     default) already is that subtle neutral tone, so neutral needs no override here beyond
+     its accent. */
+  --toast-accent: var(--color-text-secondary, #505e6a);
+}
+
+.icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  color: var(--toast-accent);
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-semibold-size, 1rem);
+  font-weight: var(--font-paragraph-2-semibold-weight, 600);
+  line-height: var(--font-paragraph-2-semibold-line-height, 1.5);
+  color: var(--color-text-primary, #1f2a37);
+}
+
+.message {
+  margin: var(--space-xs, 4px) 0 0;
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  font-weight: var(--font-paragraph-2-regular-weight, 400);
+  line-height: var(--font-paragraph-2-regular-line-height, 1.5);
+  color: var(--color-text-secondary, #505e6a);
+}
+
+/* When there's no title (on request), the message is the only line — promoted to
+   `text-primary` (matching `.title`'s own color) and no top margin, since there's no title
+   above it to space away from. Still regular weight/`paragraph-2` — only the color changes. */
+.messageOnly {
+  margin-top: 0;
+  color: var(--color-text-primary, #1f2a37);
+}
+
+.closeButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--toast-accent);
+  cursor: pointer;
+}
+
+.closeButton svg {
+  width: 100%;
+  height: 100%;
+}
+
+.closeButton:hover {
+  opacity: 0.75;
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-surface, #fff),
+    0 0 0 4px var(--color-primary, #087dae);
+  border-radius: var(--radius-sm, 8px);
+}

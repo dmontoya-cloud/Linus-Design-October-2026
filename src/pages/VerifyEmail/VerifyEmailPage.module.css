@@ -1,0 +1,214 @@
+.page {
+  min-height: 100svh;
+  display: flex;
+}
+
+/* flex: 1, no padding and no max-width, so this panel always takes exactly
+   half the page (matching .imagePanel's equal flex: 1) — padding on a
+   flex-basis: 0 item throws off the 50/50 split in this browser engine
+   even with box-sizing: border-box, so both padding and the
+   readable-width cap live on .panel instead, one layer in. align-items:
+   stretch (not center) so .logo lands at the exact same spot as LoginPage's,
+   pinned to the top rather than drifting with however tall the content below
+   it happens to be. */
+.formPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Mirrors LoginPage's .panel — logo pinned to the top, .formContent takes
+   the remaining height and centers itself within it. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 576px;
+  box-sizing: border-box;
+  padding: var(--space-xl, 32px) var(--space-lg, 24px);
+}
+
+.formContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-md, 16px);
+  text-align: left;
+}
+
+.logo {
+  flex-shrink: 0;
+  margin-bottom: var(--space-lg, 24px);
+}
+
+.title {
+  font-family: var(--font-headline-2-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-2-semibold-size, 2.5rem);
+  font-weight: var(--font-headline-2-semibold-weight, 600);
+  line-height: var(--font-headline-2-semibold-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+.copy {
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.copy strong {
+  color: var(--color-text-primary, #1f2a37);
+}
+
+.codeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md, 16px);
+}
+
+.codeLabel {
+  font-family: var(--font-label-l-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-l-semibold-size, 0.8125rem);
+  font-weight: var(--font-label-l-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+/* Sits the boxes and "Sign in" side by side rather than stacked — the button is the
+   same lg size/height as the code boxes and as Login's own submit button, so this row reads
+   as one continuous control. */
+.codeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md, 16px);
+  flex-wrap: wrap;
+}
+
+/* Stays enabled (clickable, full color) even before all 4 digits are filled — only the
+   cursor hints that clicking won't do anything yet, rather than the button going gray. */
+.confirmCodeIncomplete {
+  cursor: not-allowed;
+}
+
+.codeBoxes {
+  display: flex;
+  gap: var(--space-sm, 8px);
+}
+
+.codeBox {
+  width: 48px;
+  height: 56px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-strong, #81909c);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--color-surface, #fff);
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: 600;
+  color: var(--color-text-primary, #1f2a37);
+  text-align: center;
+  outline: none;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.codeBox:hover {
+  border-color: var(--color-text-secondary, #505e6a);
+}
+.codeBox:focus-visible {
+  border-color: var(--color-primary, #087dae);
+  box-shadow: inset 0 0 0 1px var(--color-primary, #087dae);
+}
+
+/* Same field-error border color as Field's own error variant. */
+.codeBoxError {
+  border-color: var(--color-border-danger, #dc2626);
+}
+.codeBoxError:hover,
+.codeBoxError:focus-visible {
+  border-color: var(--color-border-danger, #dc2626);
+}
+
+.codeError {
+  margin: 0;
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-label-m-regular-size, 0.6875rem);
+  color: var(--color-content-danger, #dc2626);
+}
+
+/* Reserves the height this message takes up so `.formContent`'s vertical centering doesn't
+   reflow-shift everything above it depending on whether the message is currently showing —
+   same technique, and same reason, as LoginPage's *Slot classes. */
+.codeErrorSlot {
+  min-height: 17px;
+}
+
+/* Same size/color as .textLink below, on request — reads as the same "quiet" tier of
+   copy while the countdown runs, then swaps for the actual link once it reaches zero,
+   without the text jumping in size/color when that swap happens. Plain text, no
+   underline/cursor — it isn't interactive yet. */
+.resendTimer {
+  margin: 0;
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+}
+
+.textLink {
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.textLink:hover {
+  color: var(--color-text-primary, #1f2a37);
+}
+.textLink:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-soft, #e6f2f7);
+  border-radius: var(--radius-sm, 8px);
+}
+
+/* Reserved for a real photo/illustration — a placeholder gradient stands in
+   for now, matching LoginPage's. Only shown from `desktop` (see
+   docs/design.md's breakpoints token) up, where there's enough width for a
+   true 50/50 split; below that the form panel alone fills the screen. */
+.imagePanel {
+  display: none;
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: var(--space-xxl, 48px) var(--space-xl, 32px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .imagePanel {
+    display: block;
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-soft, #e6f2f7) 0%,
+      var(--color-secondary-subtle, #bce0a4) 100%
+    );
+  }
+
+  .panel {
+    max-width: 672px;
+    padding: var(--space-xxl, 48px) var(--space-xxl, 48px);
+  }
+}

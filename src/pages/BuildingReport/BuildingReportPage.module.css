@@ -1,0 +1,399 @@
+/* Same radial wash as Dashboard/Memory & Thinking Details' .page — secondary-subtle to light
+   blue at 10% opacity, on request, replacing the earlier flat light-blue background so this
+   page matches the app's other pale-wash treatment. Anchored a fixed distance down from the
+   top rather than vertically centered, on request — `align-items: flex-start`-equivalent via
+   `justify-content: flex-start` on this column, plus that fixed top padding instead of
+   `center`, so the block sits at a consistent distance from the header regardless of viewport
+   height (true centering was pushing it too far down on tall screens). Cut down twice now, on
+   request — 300px, then 100px, now `--space-xxl` (48px) top padding and logo-to-card gap, both
+   still equal to each other. */
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-xxl, 48px);
+  background:
+    radial-gradient(ellipse at 48% 49%, rgba(188, 224, 164, 0.1), rgba(145, 213, 233, 0.1)),
+    var(--color-background, #faf9f7);
+  padding: var(--space-xxl, 48px) var(--space-lg, 24px) var(--space-xl, 32px);
+}
+
+/* `align-self: center` overrides `Logo`'s own `align-self: flex-start` (that default exists so
+   a logo in a header row never stretches full-height — not relevant here, where it needs to be
+   horizontally centered in this page's own column instead, like `.content` below it). */
+.logo {
+  height: 40px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* The one white box for this whole screen, on request — everything (icon, message, and the
+   "Did you know" tip, or the Generate report/Go to Dashboard buttons once ready) lives inside it,
+   rather than floating loose on the page's own background the way only `.tipCard` used to.
+   Same card recipe `.tipCard` used to carry on its own: surface background, rounded-xl,
+   shadow-card, padding-xl. */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-xl, 24px);
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  padding: var(--space-xl, 32px);
+}
+
+/* Narrower horizontal padding on phone only, on request, matching Figma — the card's own 32px
+   left/right was eating too much of the already-narrow phone width; vertical stays 32px. Tablet
+   keeps the full 32px on both axes, same as Desktop. Shared by `BuildingReportPage`,
+   `ReportReadyPage`, and `ReportPage` (all three import this file), so fixing it once here
+   fixes "Creating your report", "Report ready", and "Download Report" together. */
+@media (max-width: 640px) {
+  .content {
+    padding-left: var(--space-md, 16px);
+    padding-right: var(--space-md, 16px);
+  }
+}
+
+/* No `color` here (unlike the hand-drawn icon this replaced) — `DotLottieReact` renders onto a
+   `<canvas>`, not recolorable via `currentColor`, and the provided animation carries its own
+   fixed skeleton-loading gray fills anyway. */
+.icon {
+  width: 89px;
+  height: 89px;
+  margin-bottom: var(--space-lg, 24px);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+}
+
+/* A larger `.icon` size, on request — `BuildingReportPage`'s loading animation (bumped up
+   twice: 20% over the base `.icon` size, then a further 25% on top of that — 89px -> 107px ->
+   134px) and `ReportPage`'s download animation (matched to that same size so the icon doesn't
+   jump when that page hands off to this one). Composed alongside `.icon` rather than replacing
+   it, so it still gets that class's margin/fade-in. */
+.iconLg {
+  width: 134px;
+  height: 134px;
+}
+
+/* `ReportReadyPage`'s success checkmark only, on request — briefly matched to `.iconLg` (134px),
+   now 25% smaller than that (134px -> 101px), so it no longer tracks the other two icons'
+   shared size. Composed alongside `.icon` the same way `.iconLg` is. */
+.iconSuccess {
+  width: 101px;
+  height: 101px;
+}
+
+/* Dropped one step from headline-2-regular (40px) to headline-3-regular (33px), on request —
+   the next size down in the same type-scale family, reusing an existing token rather than a
+   one-off size, now that the card around it reads tighter/more compact than it used to. */
+.title {
+  font-family: var(--font-headline-3-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-3-regular-size, 2.0625rem);
+  font-weight: var(--font-headline-3-regular-weight, 400);
+  line-height: var(--font-headline-3-regular-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-md, 16px);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+/* `ReportReadyPage`'s one-/two-complete states only, on request — the second headline line
+   ("Your report is taking shape." / "...has more details about you!") steps down to
+   headline-6-regular (18px — tried at headline-4/28px first, on request), well below `.title`'s
+   own headline-3-regular (33px), so it reads as a subordinate line rather than matching weight
+   with the count itself. The all-complete state never renders a second line, so `.title` alone
+   still applies there. */
+.titleSecondLine {
+  display: inline-block;
+  font-family: var(--font-headline-6-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-regular-size, 1.125rem);
+  font-weight: var(--font-headline-6-regular-weight, 400);
+  line-height: var(--font-headline-6-regular-line-height, 1.3);
+}
+
+/* 24px gap to the buttons/next-activities below, on request — wider than the 16px `.title`
+   uses above the subtitle in the "building" state, so it gets its own override here rather than
+   changing the shared `.title` margin. Same font size/family/weight as `.title` now, on request
+   — this, "Creating your report…", and `ReportPage`'s "Your report is ready" are meant to read
+   as the same headline treatment across all three screens in this sequence; this used to render
+   one step smaller (headline-4-regular, 28px) than the other two before that request. */
+/* Flex column + 8px gap, on request — the two headline lines are now two separate elements
+   (see `ReportReadyPage`'s own two `<span>`s) rather than one text node split by a `<br/>`, so
+   the gap between them is a real, explicit 8px rather than whatever the line-height of the
+   smaller second line happened to leave. Only one child renders for the all-complete state
+   (no second line), where this is a no-op — `gap` has nothing to apply between. */
+.title.titleReady {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm, 8px);
+  margin-bottom: var(--space-lg, 24px);
+}
+
+/* `ReportReadyPage`'s all-three-complete state only, on request, matching Figma — every other
+   completed-count state gets this same divider for free from `.nextActivities`' own
+   `border-bottom` (its "here's what's next" block always renders between the title and
+   `.readyActions` there), but this state skips that block entirely (nothing left to
+   recommend), so it needs its own divider to still separate the title from the buttons below. */
+.readyDivider {
+  width: 100%;
+  height: 0;
+  margin: 0 0 var(--space-lg, 24px);
+  border: none;
+  border-top: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+/* Both hold their children the same way `.content` holds everything directly — a plain centered
+   flex column. `BuildingReportPage` and `ReportReadyPage` are two separate screens now, on
+   request, so these two never actually render at the same time any more (no more in-place
+   crossfade between them) — kept as two classes anyway since each still names its own page's
+   block clearly. */
+.buildingBlock,
+.readyBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.subtitle {
+  font-family: var(--font-paragraph-3-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-3-regular-size, 1.1875rem);
+  font-weight: var(--font-paragraph-3-regular-weight, 400);
+  line-height: 1.5;
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0 0 var(--space-xl, 32px);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+/* `ReportPage`'s second paragraph only, on request set to the smallest size in the paragraph
+   type scale — `paragraph-1-regular` (13px), one step down from `.subtitle`'s own
+   `paragraph-3-regular` (19px) — rather than reusing `.subtitle` for both. */
+.helperText {
+  font-family: var(--font-paragraph-1-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-1-regular-size, 0.8125rem);
+  font-weight: var(--font-paragraph-1-regular-weight, 400);
+  line-height: 1.5;
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0 0 var(--space-xl, 32px);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+/* Replaces the subtitle once the report is "ready" — the same fade-rise entrance that used, so
+   swapping to this state doesn't just pop the buttons in. Generate report (primary) plus a
+   secondary "Go to Dashboard", on request. Sits below `.nextActivities` now, on request — the
+   Lifestyle/Priorities nudge comes first so finishing the full check-in reads as the priority,
+   with Go to Dashboard/Generate report as the secondary "leave" actions after it — so no
+   `margin-bottom` here any more; it's the last element in the block, and `.content`'s own
+   padding already gives it room at the bottom. */
+.readyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md, 16px);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+}
+
+/* Full-width, stacked buttons on phone, on request — `flex-wrap` alone already stacked these
+   (they don't fit side by side at this width), but left each one hug-width/centered rather
+   than filling the card. Placed after `.readyActions`'s own base rule above (not the earlier
+   640px block near the top of this file) so this same-specificity override actually wins. */
+@media (max-width: 640px) {
+  .readyActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .readyActions button {
+    width: 100%;
+  }
+}
+
+/* The "start something else" nudge shown once ready, on request — `text-align: left` overrides
+   `.content`'s own centered text, since `NextActivityCard` (see the component file) is a
+   left-aligned card. Now sits above `.readyActions` (see that rule's own comment), so it carries
+   the trailing `margin-bottom` that element used to have, to keep the same gap before the
+   buttons below it. A second divider, on request, closes out the list the same way
+   `.nextActivityCard`'s own `border-bottom` separates Lifestyle from Priorities — this one
+   separates the whole list from the buttons below, via `padding-bottom` + `border-bottom` here
+   rather than on the list itself, so the divider sits inside this block's own fade-rise instead
+   of introducing a third animated element. */
+.nextActivities {
+  width: 100%;
+  text-align: left;
+  margin-bottom: var(--space-xl, 32px);
+  padding-bottom: var(--space-lg, 24px);
+  border-bottom: 1px solid var(--color-border-subtle, #eff0f2);
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+/* A divider below the intro sentence, matching Figma's reference frames — every activity row
+   (including the first) sits below its own divider, on request; `.nextActivityCard`'s own
+   `border-bottom` handles the dividers between/after rows, so this is the one before the first
+   row that those rules alone don't cover. */
+.nextActivitiesIntro {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0;
+  padding-bottom: var(--space-lg, 24px);
+  border-bottom: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+.nextActivitiesList {
+  list-style: none;
+  margin: var(--space-lg, 24px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* No border/box around each row any more, on request — a divider between rows instead
+   (`border-bottom` on every row but the last; the intro's own divider covers the one before the
+   first row, and `.nextActivities`' own trailing divider covers the one after the last), so the
+   list reads as one continuous flow of dividers matching Figma's reference frames exactly —
+   24px (`--space-lg`) on both sides of every divider throughout. Header row (title+duration,
+   button) and the description below it sit at that same 24px gap from each other. */
+.nextActivityCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg, 24px);
+  padding: var(--space-lg, 24px) 0;
+}
+
+.nextActivityCard:not(:last-child) {
+  border-bottom: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+/* Title+duration (see `.nextActivityTitleGroup`) and the Start button share this one row — on
+   request, instead of `ActivityCard`'s title-then-description-then-button-row-at-the-bottom
+   layout. `align-items: flex-start` (not `center`) so the button top-aligns with the title
+   rather than centering against the taller title+duration stack, matching Figma. */
+.nextActivityHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md, 16px);
+}
+
+.nextActivityTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs, 4px);
+}
+
+.nextActivityTitle {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+.nextActivityDuration {
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0;
+}
+
+/* Same weight/color as `.nextActivityTitle` (text-primary), on request — Figma's reference
+   frames set the description in the same dark ink as the title, not the lighter
+   `--color-text-secondary` `.nextActivitiesIntro` above it uses. */
+.nextActivityDescription {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* An inset panel, not its own floating card, now that `.content` is the one white box holding
+   this whole screen — a flat `--color-background` tint (the page's own base tone) reads as
+   "set apart from the surrounding card" without a second white-on-white card the eye can't
+   actually distinguish from its parent. Centered, not left-aligned, on request — overflow
+   hidden so the push-up-and-fade-in transition below (see .tipContent) never briefly pokes a
+   rising line of text out past the panel's own rounded corners. */
+.tipCard {
+  width: 100%;
+  background: var(--color-background, #faf9f7);
+  border-radius: var(--radius-lg, 16px);
+  padding: var(--space-lg, 24px);
+  text-align: center;
+  overflow: hidden;
+  opacity: 0;
+  animation: fade-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.tipEyebrow {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  font-style: italic;
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0 0 var(--space-sm, 8px);
+}
+
+@keyframes fade-rise-tip {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Title first, on request — a bigger rise (20px) and a touch slower than the page's own
+   entrance `fade-rise` (10px/0.7s) so the motion reads as a distinct "next fact" beat, not a
+   repeat of the initial page-load animation. */
+.tipTitle {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.3;
+  margin: 0 0 var(--space-sm, 8px);
+  opacity: 0;
+  animation: fade-rise-tip 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+}
+
+/* ...then the body, on request — same animation as the title just above, delayed to start only
+   once the title's own entrance is most of the way done, so the two read as one element after
+   another rather than a single simultaneous block. */
+.tipBody {
+  opacity: 0;
+  animation: fade-rise-tip 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

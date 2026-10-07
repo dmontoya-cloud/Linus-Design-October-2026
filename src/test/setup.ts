@@ -24,3 +24,32 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   })
 }
+
+// jsdom doesn't implement <dialog>'s showModal()/close() at all — polyfill just
+// enough (toggle the `open` attribute, fire the native `close` event) for
+// components built on native <dialog> (e.g. Modal) to be testable.
+if (!HTMLDialogElement.prototype.showModal) {
+  HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+    this.setAttribute('open', '')
+  }
+  HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
+    this.removeAttribute('open')
+    this.dispatchEvent(new Event('close'))
+  }
+}
+
+// jsdom doesn't implement IntersectionObserver at all — `@lottiefiles/dotlottie-web` (behind
+// `DotLottieReact`, used by BuildingReportPage/ReportReadyPage/ReportPage's icons) uses one to
+// pause playback while off-screen, and throws on mount without it. A no-op stub is enough: these
+// tests aren't exercising that pause-when-off-screen behavior, just rendering the pages around it.
+if (typeof window.IntersectionObserver === 'undefined') {
+  class FakeIntersectionObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return []
+    }
+  }
+  window.IntersectionObserver = FakeIntersectionObserver as unknown as typeof IntersectionObserver
+}

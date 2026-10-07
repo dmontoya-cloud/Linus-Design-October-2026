@@ -1,0 +1,88 @@
+/* Same recipe as ActivityCard — white surface, radius-xl, shadow-card — so this reads as one
+   more card on the page, not another hero moment like the gradient FullCheckInCard above.
+   Two columns: the text block flexes to fill the space, the button sits fixed-width on the
+   right, vertically centered against it — stacking to one column on narrow viewports, same
+   breakpoint FullCheckInCard's own category grid collapses at. */
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl, 32px);
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-xl, 24px);
+  box-shadow: var(
+    --shadow-card,
+    0 2px 8px rgba(32, 37, 42, 0.06),
+    0 1px 2px rgba(32, 37, 42, 0.04)
+  );
+  padding: var(--space-xl, 32px);
+  text-align: left;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-headline-4-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-4-semibold-size, 1.75rem);
+  font-weight: var(--font-headline-4-semibold-weight, 600);
+  line-height: var(--font-headline-4-semibold-line-height, 1.25);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-md, 16px);
+}
+
+.copy {
+  max-width: 40em;
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-secondary, #505e6a);
+  line-height: 1.5;
+  margin: 0 0 var(--space-md, 16px);
+}
+
+.copy:last-of-type {
+  margin-bottom: 0;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--space-sm, 8px);
+  min-width: 0;
+}
+
+/* Truncates with an ellipsis rather than wrapping to a second line, on request — at very
+   narrow widths (once `.link` goes full-width below) "Open on linushealth.com" plus the icon
+   no longer fit on one line, and a two-line pill reads as broken rather than just narrow. */
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Full-width once stacked, on request — matches FullCheckInCardV2's own hero CTA rather than
+     staying hug-width like a card that just happened to stack (see the responsiveness report's
+     finding #4: this and ReportCTACard's button were the only stacked CTAs NOT going full-width
+     on mobile). Centered, since `.link`'s own justify-content is otherwise flex-start (fine at
+     hug-width, but reads as awkwardly left-packed once the box is full-width). */
+  .link {
+    width: 100%;
+    justify-content: center;
+  }
+}

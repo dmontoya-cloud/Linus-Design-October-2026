@@ -1,0 +1,36 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg, 24px);
+}
+
+.submit {
+  align-self: flex-end;
+  margin-top: var(--space-sm, 8px);
+}
+
+/* Reserves enough height for the select plus its own "Please select..." error, so Continue
+   below never shifts position depending on whether that message is currently showing — see
+   OnboardingPage's .dayFieldSlot / GenderIdentityPage's .selectSlot for the same technique
+   (91.4px with the message, measured empirically). */
+.selectSlot {
+  min-height: 92px;
+}
+
+/* Cascades in the same rhythm as Terms of Use / Privacy Policy / Registration / Gender &
+   Identity — see src/pages/cascade.ts. */
+.reveal {
+  opacity: 0;
+  animation: fade-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

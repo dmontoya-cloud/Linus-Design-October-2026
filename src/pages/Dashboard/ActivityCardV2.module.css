@@ -1,0 +1,168 @@
+/* One column of the row inside FullCheckInCardV2 — plain dividers, not a separate elevated
+   card, since all three now live inside one shared white surface. */
+.column {
+  display: flex;
+  flex: 1 0 0;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm, 8px);
+  padding: var(--space-xl, 32px) var(--space-lg, 24px);
+  border-top: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+.column:not(:last-child) {
+  border-right: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+/* 45px/25px — 25% larger than the original 36px/20px, on request (the icons were reading too
+   small against the rest of the card). */
+.iconCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-subtle, #eff0f2);
+}
+
+/* Success-green fill + a lightened icon, on completion — the same recoloring the Figma mock's
+   own Memory & Thinking-completed asset uses, not a different icon per activity. */
+.iconCircleComplete {
+  background: var(--color-success, #15803d);
+  border-color: var(--color-success, #15803d);
+}
+
+.icon {
+  width: 25px;
+  height: 25px;
+  color: var(--color-text-primary, #1f2a37);
+}
+
+.iconCircleComplete .icon {
+  color: var(--color-secondary-subtle, #bce0a4);
+}
+
+.title {
+  font-family: var(--font-headline-5-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-5-semibold-size, 1.375rem);
+  font-weight: var(--font-headline-5-semibold-weight, 600);
+  line-height: var(--font-headline-5-semibold-line-height, 1.28);
+  color: var(--color-text-primary, #1f2a37);
+  text-align: left;
+  margin: var(--space-xs, 4px) 0 0;
+}
+
+/* label-l-semibold, not -regular, on request — matches the weight every other duration/time
+   estimate in the app already uses (Dashboard 1's ActivityCard/FullCheckInCard,
+   MemoryThinkingDetailsPage, ReportReadyPage's nextActivityDuration), just at the "l" size
+   tier this row already used rather than switching size too. */
+.duration {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-sm, 8px);
+  font-family: var(--font-label-l-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-l-semibold-size, 0.8125rem);
+  font-weight: var(--font-label-l-semibold-weight, 600);
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0;
+}
+
+/* docs/design.md's documented `badge-success` recipe (success-soft background, success text) —
+   the same pair ActivityCard's own `.statusCompleted` uses. */
+.completedBadge {
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-success, #15803d);
+  background: var(--color-success-soft, #e8f2ec);
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-xs, 4px) var(--space-sm, 8px);
+  white-space: nowrap;
+}
+
+.description {
+  flex: 1;
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-text-primary, #1f2a37);
+  line-height: 1.5;
+  text-align: left;
+  margin: 0;
+}
+
+.requirement {
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  background: var(--color-border-subtle, #eff0f2);
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-xs, 4px) var(--space-sm, 8px);
+  margin: 0;
+}
+
+/* Left-aligned for every state — "Start" (not-started), "Details" (completed, tertiary), and
+   "Restart" (completed, secondary) all sit flush left, on request. Figma's own reference right-
+   aligned the completed-state CTAs; that oddity was dropped here rather than kept. */
+.buttonRow {
+  display: flex;
+  width: 100%;
+  margin-top: var(--space-sm, 8px);
+}
+
+@media (max-width: 640px) {
+  .column:not(:last-child) {
+    border-right: none;
+  }
+
+  /* Bump "Details" up to the `md` button size's touch target (48px), on request — `sm` (40px)
+     falls short of the ~44-48px minimum commonly recommended for touch, and this is the one
+     breakpoint where thumb precision matters most. Start/Restart don't need this: both are `lg`
+     (56px) at every breakpoint now, already past that minimum. Scoped to `.detailsButton`
+     (an extra class ActivityCardV2.tsx only adds for the tertiary "Details" case) rather than
+     every `buttonRow a`, since Button's own sm/lg classes are module-scoped and not selectable
+     from here — matching that would otherwise shrink the new 56px Start/Restart buttons back
+     down to 48px on mobile. */
+  .buttonRow a.detailsButton {
+    height: 48px;
+    padding: var(--space-sm, 8px) var(--space-lg, 24px);
+    font-size: var(--font-button-size, 1rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  /* 25% larger on mobile, on request — 56px/31px vs the base 45px/25px used at every other
+     breakpoint. The icon-in-circle is one of the few purely decorative elements that doesn't
+     scale with type, so it reads slightly small once everything around it (title, buttons) has
+     already stepped up for the phone breakpoint. */
+  .iconCircle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  /* One step up the type scale on phone only, on request (tried at 900px/Tablet+Phone first,
+     scoped back down to phone-only) — headline-4-semibold, one Headline tier up from the
+     desktop base (headline-5-semibold, 22px), keeping the same Plus Jakarta Sans accent face
+     rather than stepping into Paragraph's IBM Plex Sans. Hardcoded to headline-4's own values
+     rather than derived from the base style, on purpose: this override is pinned to headline-4
+     regardless of which tier the desktop base currently uses, so it held unchanged when
+     `.title` moved from headline-6-semibold (18px) to headline-5-semibold here, on request —
+     phone still renders at exactly 28px/1.25 either way. Matches DashboardPageV2's own Welcome
+     heading, bumped the same way. */
+  .title {
+    font-size: var(--font-headline-4-semibold-size, 1.75rem);
+    line-height: var(--font-headline-4-semibold-line-height, 1.25);
+  }
+}

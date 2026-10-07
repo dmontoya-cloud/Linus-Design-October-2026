@@ -1,0 +1,155 @@
+/* The gradient lives on the page background, not the full-check-in card (which is plain
+   white) — a soft radial wash from secondary-subtle to a light blue, at 10% opacity, on
+   request. */
+.page {
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse at 48% 49%, rgba(188, 224, 164, 0.1), rgba(145, 213, 233, 0.1)),
+    var(--color-background, #faf9f7);
+}
+
+.content {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--space-xxl, 48px) var(--space-lg, 24px);
+}
+
+.welcome {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  line-height: var(--font-headline-6-semibold-line-height, 1.3);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+/* Same headline-6-semibold size/weight/color as .welcome now — Figma sizes both parts of
+   the greeting identically, on request. */
+.welcomeSubtext {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+}
+
+/* No line break by default — the greeting and subtext just wrap normally at the desktop width
+   this reads fine at. Forced onto its own line on Tablet and Phone instead (see the media query
+   below), on request, rather than leaving it to wrap wherever it happens to run out of room. */
+.welcomeBreak {
+  display: none;
+}
+
+.copy {
+  font-family: var(--font-headline-6-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-6-semibold-size, 1.125rem);
+  font-weight: var(--font-headline-6-semibold-weight, 600);
+  line-height: var(--font-headline-6-semibold-line-height, 1.3);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-sm, 8px);
+}
+
+/* "Learn more about brain health" reuses .copy's type style but, unlike "Explore one area", isn't
+   followed by a subtext line — it goes straight into resources-card, so it needs the larger
+   between-sections gap instead of .copy's own tight heading-to-subtext spacing. Equal top and
+   bottom margin, on request — it used to only have a bottom margin, which (since the card above
+   it has no bottom margin of its own) left it sitting flush against that card while the gap
+   below it, before the resources card, was twice as large. */
+.copyNoSubtext {
+  margin: var(--space-lg, 24px) 0;
+}
+
+/* Cascades everything below the nav bar in on mount — same fade-rise-staggered-by-
+   cascadeDelay rhythm as Terms of Use / Privacy Policy / Registration — see
+   src/pages/cascade.ts. */
+.reveal {
+  opacity: 0;
+  animation: fade-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Tighter side margins on phone, on request — 24px either side left less room for content
+   than it needed to on the narrowest screens; the top/bottom padding stays as-is. One step up
+   the type scale for the Welcome heading too, on request (tried at 900px/Tablet+Phone first,
+   scoped back down to phone-only) — headline-4-semibold, not the modular scale's literal
+   "next size" (paragraph-3-semibold, 19px): headline-6 is deliberately off-scale on its own
+   (see docs/design.md), and stepping into Paragraph would swap the accent Plus Jakarta Sans
+   face for the body IBM Plex Sans one — headline-4 keeps the same headline typeface, just one
+   tier up. Placed after the base rules above (not merged into an earlier block) since a media
+   query needs to out-order a same-specificity base rule to win, not just out-condition it. */
+@media (max-width: 640px) {
+  .content {
+    padding-left: var(--space-sm, 8px);
+    padding-right: var(--space-sm, 8px);
+  }
+
+  .welcome,
+  .welcomeSubtext {
+    font-size: var(--font-headline-4-semibold-size, 1.75rem);
+    line-height: var(--font-headline-4-semibold-line-height, 1.25);
+  }
+}
+
+/* Tablet and Phone both get the forced line break, on request — 900px matches Dashboard 1's
+   own grid breakpoint, reused here as the "Tablet and Phone together" cutoff (distinct from
+   the phone-only 640px block above, which stays phone-only per its own separate request).
+   Placed last so it out-orders .welcomeBreak's own unconditional display:none above. */
+@media (max-width: 900px) {
+  .welcomeBreak {
+    display: block;
+  }
+}
+
+/* Tablet-only (641-900px), on request — the forced break above reads fine on Phone at its own
+   bumped headline-4-semibold size (the 640px block), but on Tablet it was still splitting
+   headline-6-semibold-sized text into two short, oddly-broken lines. One step up the type scale
+   here too (headline-4-semibold, same size Phone already uses) rather than a Tablet-specific
+   size, and the break undone — Tablet's own width comfortably fits the whole greeting on one
+   line at that size, unlike Phone's narrower column. Placed last so it out-orders both the
+   max-width:900px block's display:block above and the base .welcome/.welcomeSubtext rules. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .welcome,
+  .welcomeSubtext {
+    font-size: var(--font-headline-4-semibold-size, 1.75rem);
+    line-height: var(--font-headline-4-semibold-line-height, 1.25);
+  }
+
+  .welcomeBreak {
+    display: none;
+  }
+}
+
+/* Top-right, on request — fixed regardless of scroll position, matching how this kind of
+   transient notification is conventionally placed. 1400 is docs/design.md's own `z-index.toast`
+   token value; no CSS variable exists for it yet (the whole z-index scale is documented but not
+   wired into theme.ts — see Tooltip.module.css's own `.bubble` for the same situation), so it's
+   a literal here rather than an invented one. Width caps at the viewport on Phone, where a fixed
+   360px would run off the right edge. */
+.toastWrapper {
+  position: fixed;
+  top: var(--space-lg, 24px);
+  right: var(--space-lg, 24px);
+  z-index: 1400;
+  width: min(360px, calc(100vw - 48px));
+  animation: toast-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

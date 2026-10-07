@@ -1,0 +1,203 @@
+/* Plain white now, on request — the gradient moved to DashboardPage's own .page background
+   instead of living on this card (it previously had its own gradient fill, replacing an
+   even earlier flat --color-primary-strong navy fill). No shadow: this card leans on the
+   page's tinted background for separation rather than elevation. */
+.card {
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-xl, 24px);
+  padding: var(--space-xl, 32px) var(--space-lg, 24px);
+  margin-bottom: var(--space-lg, 24px);
+}
+
+.title {
+  font-family: var(--font-headline-3-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-3-semibold-size, 2.0625rem);
+  font-weight: var(--font-headline-3-semibold-weight, 600);
+  line-height: var(--font-headline-3-semibold-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-md, 16px);
+}
+
+.copy {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  line-height: 1.5;
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+/* Clock icon + a rough duration estimate for the full three-part check-in, on request —
+   same treatment as ActivityCard's own `.duration`/`.durationIcon`, so the estimate reads
+   consistently whether it's on this card or one of the three below it. */
+.duration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs, 4px);
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0 0 var(--space-md, 16px);
+}
+
+.durationIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Bordered container around the progress tracker + "X/3 complete" summary, on request —
+   border-subtle stroke, no fill, radius-md. Padding bumped up by 8px in both directions (was
+   space-sm/space-md, 8px/16px) on request — the content was reading a little tight against the
+   border. */
+.trackerBox {
+  border: 1px solid var(--color-border-subtle, #eff0f2);
+  border-radius: var(--radius-md, 16px);
+  padding: var(--space-md, 16px) var(--space-lg, 24px);
+  margin: 0 0 var(--space-lg, 24px);
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  list-style: none;
+  margin: 0 0 var(--space-sm, 8px);
+  padding: 0;
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm, 8px);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm, 8px);
+}
+
+.categoryIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--color-text-primary, #1f2a37);
+}
+
+.categoryBar {
+  display: block;
+  height: 6px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-border-subtle, #eff0f2);
+  overflow: hidden;
+}
+
+/* Solid `success` green at 100% width once a category is complete, 0% otherwise — same green
+   docs/design.md's `badge-success` uses, not a one-off color. */
+.categoryBarFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-success, #15803d);
+  transition: width var(--motion-duration-base, 150ms)
+    var(--motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Bumped up one step from label-l-semibold (13px) to paragraph-2-semibold (16px), on request —
+   the same next-tier-up move `ActivityCard`'s own `.instructionTitle` already made, reusing an
+   existing type-scale token rather than inventing a one-off size. */
+.categoryLabel {
+  font-family: var(--font-paragraph-2-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-semibold-size, 1rem);
+  font-weight: var(--font-paragraph-2-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+}
+
+/* docs/design.md's documented default `badge` recipe (primary-soft background, primary text) —
+   an existing token pair, same one `.statusCompleted` on ActivityCard uses the `-success`
+   variant of, not a one-off color invented for this label. */
+.nextBadge {
+  font-family: var(--font-label-m-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-m-semibold-size, 0.6875rem);
+  font-weight: var(--font-label-m-semibold-weight, 600);
+  letter-spacing: var(--font-label-m-semibold-letter-spacing, 0.02em);
+  color: var(--color-primary, #087dae);
+  background: var(--color-primary-soft, #e6f2f7);
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-xs, 4px) var(--space-sm, 8px);
+}
+
+.categoriesComplete {
+  font-family: var(--font-label-l-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-label-l-regular-size, 0.8125rem);
+  color: var(--color-text-secondary, #505e6a);
+  margin: 0;
+}
+
+/* Holds the main CTA plus, once at least one activity is done, a secondary "Download report"
+   button beside it — `flex-wrap` so the pair still reflows to two lines on a narrow card rather
+   than overflowing or shrinking either button. */
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md, 16px);
+}
+
+/* Inverted from the old white-on-navy button (white background, dark text) to dark-on-light
+   (this card's own primary-strong navy, white text) — the gradient card is light now, so this
+   keeps the CTA reading as the high-contrast, unmissable action it was before. */
+.startButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0 var(--space-xl, 32px);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-primary-hover, #065e83);
+  color: var(--color-text-on-primary, #fff);
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--font-button-size, 1rem);
+  font-weight: 500;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background-color 0.12s ease;
+}
+
+.startButton:hover {
+  background: var(--color-primary-pressed, #044560);
+}
+
+.startButton:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-surface, #fff),
+    0 0 0 4px var(--color-primary, #087dae);
+}
+
+/* A couple of quick hops on mount, on request, so a "Download report" button that's new to
+   this card (it only appears once at least one activity is done) actually gets noticed rather
+   than blending in as if it had always been there — same bounce recipe `ScrollDownHint`
+   already uses elsewhere in this app (two hops here, not three, since this button doesn't need
+   as insistent a nudge as a scroll affordance easy to miss below the fold). */
+.downloadButton {
+  animation: fullCheckInDownloadBounce 0.5s ease-in-out 0.4s 2;
+}
+
+@keyframes fullCheckInDownloadBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 640px) {
+  .categories {
+    grid-template-columns: 1fr;
+    gap: var(--space-md, 16px);
+  }
+}

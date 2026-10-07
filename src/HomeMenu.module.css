@@ -1,0 +1,85 @@
+/* Wider than .screen-placeholder (App.css) — that class stays shared with Placeholder's narrow
+   single-column stub layout; Home needs real room for a 3-column thumbnail grid. */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-xl, 32px) var(--space-lg, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md, 16px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg, 24px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm, 8px);
+  border: 1px solid var(--color-border-subtle, #eff0f2);
+  border-radius: var(--radius-lg, 16px);
+  padding: var(--space-sm, 8px);
+  padding-bottom: 24px;
+  background: var(--color-surface, #fff);
+}
+
+/* A live miniature of the real route, not a static screenshot — a same-origin iframe scaled
+   down with a transform. Fills the card's full width (via a container query unit, so the scale
+   is always exactly right for whatever the grid column's actual rendered width is — a fixed
+   pixel width/scale here left a gap on the right whenever the column was wider than that fixed
+   size). `container-type: inline-size` on this wrapper is what makes `cqw` below resolve against
+   its own width rather than the viewport's. */
+.thumbWrap {
+  width: 100%;
+  aspect-ratio: 1440 / 900;
+  overflow: hidden;
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-background, #faf9f7);
+  border: 1px solid var(--color-border-subtle, #eff0f2);
+  container-type: inline-size;
+}
+
+.thumbFrame {
+  width: 1440px;
+  height: 900px;
+  border: none;
+  transform: scale(calc(100cqw / 1440px));
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+/* paragraph-2-semibold, on request — one tier up from label-l (13px): paragraph-1 is also
+   13px, same size as label-l just a different line-height, so paragraph-2 (16px, the scale's
+   own base size) is the next size that's actually bigger. */
+.cardLabel {
+  font-family: var(--font-paragraph-2-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-semibold-size, 1rem);
+  font-weight: var(--font-paragraph-2-semibold-weight, 600);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+/* The design system's secondary button (buttonClassName('secondary', 'sm')) — right-aligned
+   within the card, on request, regardless of the thumbnail/label above staying left-aligned. */
+.goLink {
+  align-self: flex-end;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
