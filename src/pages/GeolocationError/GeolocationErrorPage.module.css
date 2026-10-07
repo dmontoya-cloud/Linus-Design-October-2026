@@ -1,0 +1,84 @@
+/* Same split-panel shell as BrowserNotSupportedPage (and LoginPage before it) — left content
+   panel, right gradient panel, gradient hidden below `desktop` where there's no room for a true
+   half/half split. */
+.page {
+  min-height: 100svh;
+  display: flex;
+}
+
+.leftPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: var(--space-xl, 32px) var(--space-lg, 24px);
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-lg, 24px);
+  max-width: 496px;
+}
+
+/* Centered above the left-aligned title/body, matching BrowserNotSupportedPage's own icon
+   treatment. */
+.icon {
+  align-self: center;
+  width: 177px;
+  height: 81px;
+}
+
+.title {
+  font-family: var(--font-headline-3-semibold-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-headline-3-semibold-size, 2.0625rem);
+  font-weight: var(--font-headline-3-semibold-weight, 600);
+  line-height: var(--font-headline-3-semibold-line-height, 1.2);
+  color: var(--color-text-primary, #1f2a37);
+  margin: 0;
+}
+
+/* Same Primary/Navy treatment as BrowserNotSupportedPage's own body copy. */
+.body {
+  font-family: var(--font-paragraph-2-regular-family, var(--font-family, system-ui, sans-serif));
+  font-size: var(--font-paragraph-2-regular-size, 1rem);
+  color: var(--color-primary-strong, #033246);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.rightPanel {
+  display: none;
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .leftPanel {
+    padding: var(--space-xxl, 48px) var(--space-xl, 32px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .rightPanel {
+    display: block;
+    background: linear-gradient(
+      148deg,
+      var(--color-primary-soft, #e6f2f7) 14.64%,
+      var(--color-secondary-subtle, #bce0a4) 85.36%
+    );
+  }
+
+  .leftPanel {
+    max-width: 720px;
+    padding: var(--space-xxl, 48px) var(--space-xxl, 48px);
+  }
+}

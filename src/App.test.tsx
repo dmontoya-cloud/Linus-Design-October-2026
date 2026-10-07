@@ -30,7 +30,7 @@ describe('App', () => {
       'Assessment Intro',
       'In-App Report',
     ].forEach((label) => {
-      expect(screen.getByRole('link', { name: label })).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: `Go to ${label}` })).toBeInTheDocument()
     })
   })
 
@@ -53,7 +53,7 @@ describe('App', () => {
     render(<App />)
     scrollToSpy.mockClear() // drop the initial-mount call, only care about navigation
 
-    await user.click(screen.getByRole('link', { name: 'In-App Report' }))
+    await user.click(screen.getByRole('link', { name: 'Go to In-App Report' }))
     expect(scrollToSpy).toHaveBeenCalledWith(0, 0)
 
     scrollToSpy.mockRestore()
@@ -62,7 +62,7 @@ describe('App', () => {
   it('navigates to the real Login screen, not a placeholder', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByRole('link', { name: 'Login' }))
+    await user.click(screen.getByRole('link', { name: 'Go to Login' }))
     expect(
       screen.getByRole('heading', { name: 'Welcome, let’s\u00A0get\u00A0started!' }),
     ).toBeInTheDocument()
@@ -80,14 +80,14 @@ describe('App', () => {
   it('jumps straight to Dashboard from the prototype index, without the login flow', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByRole('link', { name: 'Dashboard' }))
+    await user.click(screen.getByRole('link', { name: 'Go to Dashboard' }))
     expect(screen.getByRole('heading', { name: /^Welcome, there!/ })).toBeInTheDocument()
   })
 
   it('walks the Login → Verify Email → Verify Account → Legal Intro → Terms → Privacy → Setting Up → Thanks → Onboarding → Education → Gender & Identity → Loading → Dashboard happy path', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByRole('link', { name: 'Login' }))
+    await user.click(screen.getByRole('link', { name: 'Go to Login' }))
     await user.type(screen.getByLabelText('Email address*'), 'ada@example.com')
     await user.click(screen.getByRole('checkbox', { name: /I'm over the age of eighteen/ }))
     await user.click(screen.getByRole('button', { name: 'Send code' }))

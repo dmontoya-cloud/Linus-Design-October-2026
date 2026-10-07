@@ -31,6 +31,9 @@ import { BuildingReportPage } from '@/pages/BuildingReport/BuildingReportPage'
 import { ReportReadyPage } from '@/pages/BuildingReport/ReportReadyPage'
 import { ReportPage } from '@/pages/BuildingReport/ReportPage'
 import { LandingPage } from '@/pages/Landing/LandingPage'
+import { BrowserNotSupportedPage } from '@/pages/BrowserNotSupported/BrowserNotSupportedPage'
+import { GeolocationErrorPage } from '@/pages/GeolocationError/GeolocationErrorPage'
+import homeStyles from './HomeMenu.module.css'
 import './App.css'
 
 /**
@@ -246,6 +249,37 @@ function LoginRoute() {
  * /login via `RequireAuth` — clicking here is a preview shortcut, not the real flow, so it
  * mock-signs-in first (same as actually completing Login) for any step that needs it.
  */
+/** One tile in the prototype index's grid — a live same-origin iframe thumbnail (scaled down
+ * via CSS transform, not a pre-rendered screenshot, so it never goes stale) plus a label and
+ * whatever action element (`children`) the caller needs — a router `Link` for internal routes,
+ * a plain `<a>` for the two destinations that aren't ones (the external marketing site, the
+ * static design-system HTML page). */
+function MenuCard({
+  label,
+  thumbSrc,
+  children,
+}: {
+  label: string
+  thumbSrc: string
+  children: ReactNode
+}) {
+  return (
+    <div className={homeStyles.card}>
+      <div className={homeStyles.thumbWrap}>
+        <iframe
+          src={thumbSrc}
+          title={`${label} thumbnail`}
+          aria-hidden="true"
+          tabIndex={-1}
+          className={homeStyles.thumbFrame}
+        />
+      </div>
+      <p className={homeStyles.cardLabel}>{label}</p>
+      {children}
+    </div>
+  )
+}
+
 function Home() {
   const { login, completeActivity, markReportBuilt } = useAuth()
 
@@ -262,38 +296,47 @@ function Home() {
   }
 
   return (
-    <main className="screen-placeholder">
+    <main className={homeStyles.page}>
       <h1>Linus Patient Engagement — Prototype</h1>
       <p>
         Login, Legal Intro, Terms of Use, Privacy Policy, Setting Up, Thanks, Onboarding, Gender
         &amp; Identity, Education, and Loading are real. Mock data only.
       </p>
       <nav aria-label="Phase 1 funnel">
-        <ul>
+        <ul className={homeStyles.grid}>
           <li>
             {/* Points at the real deployed marketing site, on request, rather than this repo's
                 own internal `/landing` route (`LandingPage` — still built and reachable
-                directly, just no longer the index's own link target). A real external
-                destination, not a router Link, so it opens in a new tab rather than navigating
-                this SPA away from itself. */}
-            <a
-              href="https://linus-consumer-experience.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonClassName('primary')}
-            >
-              Landing Page
-            </a>
+                directly, just no longer the index's own link target). The thumbnail will likely
+                come back blank — cross-origin pages routinely block framing — the "Go to page"
+                link still opens it in a new tab either way. */}
+            <MenuCard label="Landing Page" thumbSrc="https://linus-consumer-experience.vercel.app/">
+              <a
+                href="https://linus-consumer-experience.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Go to Landing Page"
+                className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+              >
+                Go to page
+              </a>
+            </MenuCard>
           </li>
           {FUNNEL_STEPS.map((step) => (
             <li key={step.path}>
-              <Link
-                to={step.path}
-                className={buttonClassName('primary')}
-                onClick={REQUIRE_AUTH_STEP_PATHS.includes(step.path) ? login : undefined}
-              >
-                {step.label}
-              </Link>
+              {/* Gated (RequireAuth) routes will show the Login redirect in their thumbnail —
+                  the iframe is its own browsing context, so it doesn't see this page's mock
+                  `login()` call the way a real click-through navigation would. */}
+              <MenuCard label={step.label} thumbSrc={`/web${step.path}`}>
+                <Link
+                  to={step.path}
+                  aria-label={`Go to ${step.label}`}
+                  className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+                  onClick={REQUIRE_AUTH_STEP_PATHS.includes(step.path) ? login : undefined}
+                >
+                  Go to page
+                </Link>
+              </MenuCard>
             </li>
           ))}
           <li>
@@ -301,25 +344,60 @@ function Home() {
                 report downloaded", just Dashboard in a particular state, so this jumps there
                 directly via `previewSurveyState` rather than making a visitor click through
                 three activities and a real download first. */}
-            <Link
-              to="/dashboard"
-              state={{ showSurvey: true }}
-              className={buttonClassName('primary')}
-              onClick={previewSurveyState}
-            >
-              Survey
-            </Link>
+            <MenuCard label="Survey" thumbSrc="/web/dashboard">
+              <Link
+                to="/dashboard"
+                state={{ showSurvey: true }}
+                aria-label="Go to Survey"
+                className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+                onClick={previewSurveyState}
+              >
+                Go to page
+              </Link>
+            </MenuCard>
+          </li>
+          <li>
+            {/* A real page load, not a router Link — docs/design.html is a self-contained
+                static page outside the SPA, not a React route (see vite.config.ts's
+                `designSystem` build entry). */}
+            <MenuCard label="Design System reference" thumbSrc="/docs/design.html">
+              <a
+                href="/docs/design.html"
+                aria-label="Go to Design System reference"
+                className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+              >
+                Go to page
+              </a>
+            </MenuCard>
+          </li>
+          <li>
+            {/* Reference only, on request — not part of FUNNEL_STEPS since nothing in this
+                prototype ever navigates here on its own (see BrowserNotSupportedPage's own doc
+                comment). A plain Link, not gated by RequireAuth. */}
+            <MenuCard label="Browser Not Supported" thumbSrc="/web/browser-not-supported">
+              <Link
+                to="/browser-not-supported"
+                aria-label="Go to Browser Not Supported"
+                className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+              >
+                Go to page
+              </Link>
+            </MenuCard>
+          </li>
+          <li>
+            {/* Reference only, same as Browser Not Supported above. */}
+            <MenuCard label="Geolocation Error" thumbSrc="/web/geolocation-error">
+              <Link
+                to="/geolocation-error"
+                aria-label="Go to Geolocation Error"
+                className={[buttonClassName('secondary', 'sm'), homeStyles.goLink].join(' ')}
+              >
+                Go to page
+              </Link>
+            </MenuCard>
           </li>
         </ul>
       </nav>
-      <p>
-        {/* A real page load, not a router Link — docs/design.html is a self-contained
-            static page outside the SPA, not a React route (see vite.config.ts's
-            `designSystem` build entry). */}
-        <a href="/docs/design.html" className={buttonClassName('secondary')}>
-          Design System reference
-        </a>
-      </p>
     </main>
   )
 }
@@ -340,6 +418,13 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/design-system" element={<DesignSystemPage />} />
+              {/* Reference only — nothing in this prototype actually detects the visitor's
+                  browser, so no route or redirect ever lands here on its own. Reachable only
+                  from the prototype index's own menu, like Design System reference below. */}
+              <Route path="/browser-not-supported" element={<BrowserNotSupportedPage />} />
+              {/* Reference only, same as /browser-not-supported above — nothing in this
+                  prototype actually checks the visitor's location. */}
+              <Route path="/geolocation-error" element={<GeolocationErrorPage />} />
               <Route path="/login" element={<LoginRoute />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
               <Route path="/verify-account" element={<VerifyAccountPage />} />
