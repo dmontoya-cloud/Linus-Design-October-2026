@@ -58,8 +58,10 @@ const CATEGORIES = [
  * secondary "Redo activity" instead, on request, since redoing is that per-activity card's more
  * relevant next step.
  *
- * Once a report has actually been built and downloaded (`useAuth().hasBuiltReport`, set by
- * `ReportPage`'s Download button), on request, neither "Create my report" CTA re-offers building
+ * Once a report has actually been built (`useAuth().hasBuiltReport`, set on mount by
+ * `ReportPage` — reaching that "Your report is ready" screen at all, not specifically clicking
+ * its Download button, which previously left this flag false if a visitor left via "Go to
+ * Dashboard" instead), on request, neither "Create my report" CTA re-offers building
  * the same report again: the secondary button disappears entirely (matching the "at least one
  * activity is done and at least one still isn't" condition it already required), and once all
  * three are done, the main CTA relabels to "View report" and points straight at `/report`
@@ -72,7 +74,7 @@ const CATEGORIES = [
  * line; all three done keeps the two-line "status, then what's next" treatment
  * `ReportReadyPage`'s own `headlineLines` uses, since "All activities are in!" reads as its own
  * short beat before the instruction that follows it. Once the report has actually been built
- * (`hasBuiltReport`, set by `ReportPage`'s Download button), on request, this overrides that
+ * (`hasBuiltReport`, set on mount by `ReportPage`), on request, this overrides that
  * all-three-done copy with a single "Your report is ready!" line — the "Create your full brain
  * health report" instruction no longer applies once that's already happened, matching the main
  * CTA's own switch to "View report" for the same condition. */

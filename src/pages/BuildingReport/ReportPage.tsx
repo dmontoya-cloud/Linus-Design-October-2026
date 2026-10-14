@@ -52,11 +52,22 @@ const DOWNLOAD_DELAY_MS = 4000
  * back to Dashboard where the other two intentionally don't. The second paragraph below the main
  * one uses `.helperText`, on request set to the smallest size in the paragraph type scale, rather
  * than reusing `.subtitle` for both.
+ *
+ * `useAuth().markReportBuilt` fires on mount, not from the Download button — reaching this
+ * screen at all is what "built" means (it's titled "Your report is ready"), on request, fixing a
+ * bug where leaving via "Go to Dashboard" without downloading left `hasBuiltReport` false:
+ * `ReportCTACard`/`FullCheckInCard(V2)` would then show "Create my report" again — re-running
+ * the build animation for a report that already exists — instead of "Download my report"
+ * pointing straight at this same page.
  */
 export function ReportPage() {
   const navigate = useNavigate()
   const { markReportBuilt } = useAuth()
   const [isDownloading, setIsDownloading] = useState(false)
+
+  useEffect(() => {
+    markReportBuilt()
+  }, [markReportBuilt])
 
   useEffect(() => {
     if (!isDownloading) return
@@ -100,10 +111,7 @@ export function ReportPage() {
               size="lg"
               loading={isDownloading}
               disabled={isDownloading}
-              onClick={() => {
-                setIsDownloading(true)
-                markReportBuilt()
-              }}
+              onClick={() => setIsDownloading(true)}
             >
               Download my report (PDF)
             </Button>
