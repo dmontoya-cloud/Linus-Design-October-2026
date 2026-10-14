@@ -7,7 +7,8 @@ import styles from './FullCheckInCardV2.module.css'
 /** The title's own copy per `completedCount` — ported over from Dashboard 1's `FullCheckInCard`
  * (see that component's own doc comment for the full reasoning) rather than the single static
  * title the Figma mock's one given state showed, on request. Once the report has actually been
- * built (`hasBuiltReport`, set by `ReportPage`'s Download button), on request, this overrides the
+ * built (`hasBuiltReport`, set on mount by `ReportPage` — reaching that screen at all, not
+ * specifically clicking its Download button), on request, this overrides the
  * all-three-done copy with a single "Your report is ready!" line — the "Create your full brain
  * health report" instruction no longer applies once that's already happened, matching the main
  * CTA's own switch to "View report" for the same condition. */
